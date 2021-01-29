@@ -4,17 +4,22 @@ import (
 	"bytes"
 	"errors"
 	"io"
+	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"testing"
 )
 
 const (
 	testFolder = "./testdata"
-	testFile   = "./testdata/enwik9"
+
+	enwik8URL = "https://download847.mediafire.com/od2hmgx40o3g/10g0e60tst2dnqt/enwik8.br"
 )
 
 var (
+	testFile = filepath.Join(testFolder, "enwik8")
+
 	m1                = 1024 * 1024
 	defaultBenchmarks = []struct {
 		name string
@@ -23,7 +28,6 @@ var (
 		{"4M", m1 * 4},
 		{"16M", m1 * 16},
 		{"64M", m1 * 64},
-		{"256M", m1 * 256},
 	}
 	defaultTest = make([]byte, 1024*1024)
 
@@ -96,6 +100,31 @@ func (m *mockFs) reset() {
 	m.errCreate = nil
 	m.errOpen = nil
 	m.errStat = os.ErrNotExist // default for isExists
+}
+
+func init() {
+	// test folder
+	if _, err := os.Stat(testFolder); os.IsNotExist(err) {
+		if err := os.Mkdir(testFolder, 0777); err != nil {
+			panic(err)
+		}
+	}
+
+	// download test data if needed
+	if _, err := os.Stat(testFile); os.IsNotExist(err) {
+		out, err := os.Create(testFile)
+		resp, err := http.Get(enwik8URL)
+		if err != nil {
+			panic(err)
+		}
+		b := &Brotli{}
+		if err = b.Decompress(resp.Body, out); err != nil {
+			panic(err)
+		}
+	} else if err != nil {
+		panic(err)
+	}
+
 }
 
 func TestNewFileCompressor(t *testing.T) {
@@ -189,11 +218,16 @@ func TestFileCompressor(t *testing.T) {
 }
 
 func testCompressDecompress(t *testing.T, cD CompressorDecompressor) {
+	f, err := os.Open(testFile)
+	if err != nil {
+		panic(err)
+	}
+
 	var in bytes.Buffer
 	var out bytes.Buffer
 
 	var buffer = make([]byte, 1024*512)
-	readTestData(buffer)
+	f.Read(buffer)
 	in.Write(buffer)
 
 	t.Run("Compress", func(t *testing.T) {
@@ -218,7 +252,8 @@ func testCompressDecompress(t *testing.T, cD CompressorDecompressor) {
 		var out bytes.Buffer
 
 		var buffer = make([]byte, 1024*512)
-		readTestData(buffer)
+		f.Seek(0, 0)
+		f.Read(buffer)
 		in.Write(buffer)
 		if err := cD.Decompress(&in, &out); err == nil {
 			// some compressors don't return error for decompress, and simply copy data
@@ -243,12 +278,18 @@ func testCompressDecompress(t *testing.T, cD CompressorDecompressor) {
 }
 
 func benchmarkCompressDecompress(b *testing.B, cD CompressorDecompressor) {
+	data, err := os.Open(testFile)
+	if err != nil {
+		panic(err)
+	}
+
 	for _, bench := range defaultBenchmarks {
 		var w bytes.Buffer
 		var r bytes.Buffer
 		b.Run(bench.name, func(b *testing.B) {
 			var buffer = make([]byte, bench.size)
-			readTestData(buffer)
+			data.Seek(0, 0)
+			data.Read(buffer)
 			r.Write(buffer)
 			if !testing.Short() {
 				l, isLevelled := cD.(Leveller)

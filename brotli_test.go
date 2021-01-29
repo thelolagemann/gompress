@@ -1,7 +1,6 @@
 package gompress
 
 import (
-	"os"
 	"testing"
 
 	"github.com/andybalholm/brotli"
@@ -26,9 +25,4 @@ func TestBrotli(t *testing.T) {
 
 func BenchmarkBrotli(b *testing.B) {
 	benchmarkCompressDecompress(b, NewBrotli())
-}
-
-func readTestData(p []byte) {
-	data, _ := os.Open("./testdata/enwiki9")
-	data.Read(p)
 }
