@@ -48,9 +48,11 @@ var (
 		gompress.NewFileCompressor(gompress.NewBrotli(), "brotli", "br"),
 		gompress.NewFileCompressor(gompress.NewBzip2(), "bzip2", "bz2"),
 		gompress.NewFileCompressor(gompress.NewGzip(), "gzip", "gz"),
+		gompress.NewFileCompressor(gompress.NewLzma(), "lzma", "lzma"),
 		gompress.NewFileCompressor(gompress.NewLzma2(), "lzma2", "lz2"),
 		gompress.NewFileCompressor(gompress.NewLz4(), "lz4", "lz4"),
 		gompress.NewFileCompressor(gompress.NewSnappy(), "snappy", "snz"),
+		gompress.NewFileCompressor(gompress.NewXz(), "xz", "xz"),
 		gompress.NewFileCompressor(gompress.NewZlib(), "zlib", "zlib"),
 		gompress.NewFileCompressor(gompress.NewZstd(), "zstd", "zst"),
 	}
