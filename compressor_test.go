@@ -1,6 +1,7 @@
 package gompress
 
 import (
+	"archive/zip"
 	"bytes"
 	"errors"
 	"io"
@@ -14,7 +15,7 @@ import (
 const (
 	testFolder = "./testdata"
 
-	enwik8URL = "https://download847.mediafire.com/od2hmgx40o3g/10g0e60tst2dnqt/enwik8.br"
+	enwik8URL = "https://data.deepai.org/enwik8.zip"
 )
 
 var (
@@ -112,14 +113,32 @@ func init() {
 
 	// download test data if needed
 	if _, err := os.Stat(testFile); os.IsNotExist(err) {
-		out, err := os.Create(testFile)
+		out, err := os.Create(testFile + ".zip")
 		resp, err := http.Get(enwik8URL)
 		if err != nil {
 			panic(err)
 		}
-		b := &Brotli{}
-		if err = b.Decompress(resp.Body, out); err != nil {
+		_, err = io.Copy(out, resp.Body)
+		if err != nil {
 			panic(err)
+		}
+		reader, err := zip.OpenReader(testFile + ".zip")
+		if err != nil {
+			panic(err)
+		}
+		for _, file := range reader.File {
+			if file.Name == "enwik8" {
+				fileReader, err := file.Open()
+				if err != nil {
+					panic(err)
+				}
+				defer fileReader.Close()
+				out, err := os.Create(testFile)
+
+				if _, err := io.Copy(out, fileReader); err != nil {
+					panic(err)
+				}
+			}
 		}
 	} else if err != nil {
 		panic(err)
