@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/andybalholm/brotli v1.0.1
+	github.com/cyberdelia/lzo v0.0.0-20200705034612-bdc8a2608ed4
 	github.com/dsnet/compress v0.0.1
 	github.com/golang/snappy v0.0.2
 	github.com/jessevdk/go-flags v1.4.0

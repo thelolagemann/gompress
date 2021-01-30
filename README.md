@@ -12,6 +12,7 @@ gompress is a small CLI utility for working with compressed data formats.
 - lz4
 - lzma
 - lzma2
+- lzo (64bit only)
 - snappy
 - xz
 - zlib
