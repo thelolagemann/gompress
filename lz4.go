@@ -6,7 +6,7 @@ import (
 	"github.com/pierrec/lz4/v4"
 )
 
-// Lz4 implements both the Compressor and Decomrpessor
+// Lz4 implements both the Compressor and Decompressor
 // interfaces, facilitating the compression and decompression
 // of data streams using the lz4 data compression algorithm.
 type Lz4 struct {

@@ -7,7 +7,7 @@ import (
 )
 
 // Bzip2 implements both the Compressor and Decompressor
-// interfaces, facilitiating the compression and decompression
+// interfaces, facilitating the compression and decompression
 // of data streams using the bzip2 data format specification.
 type Bzip2 struct {
 	*CompressionLevel
