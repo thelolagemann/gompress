@@ -47,6 +47,7 @@ var (
 	FileCompressors []gompress.CompressorDecompressor = []gompress.CompressorDecompressor{
 		gompress.NewFileCompressor(gompress.NewBrotli(), "brotli", "br"),
 		gompress.NewFileCompressor(gompress.NewBzip2(), "bzip2", "bz2"),
+		gompress.NewFileCompressor(gompress.NewDeflate(), "deflate", "z"),
 		gompress.NewFileCompressor(gompress.NewGzip(), "gzip", "gz"),
 		gompress.NewFileCompressor(gompress.NewLzma(), "lzma", "lzma"),
 		gompress.NewFileCompressor(gompress.NewLzma2(), "lzma2", "lz2"),

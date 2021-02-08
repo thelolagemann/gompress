@@ -5,10 +5,13 @@ supported are
 
 	brotli
 	bzip2
+	deflate
 	gzip
 	lz4
 	lzma2
+	lzo
 	snappy
+	xz
 	zlib
 	zstd
 
