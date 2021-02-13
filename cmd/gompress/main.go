@@ -73,10 +73,6 @@ var (
 	opts Options
 )
 
-type decompressCmd struct {
-	Method string `short:"m" long:"method" description:"Override the inferred compressor"`
-}
-
 type Options struct {
 	Verbose bool `short:"v" long:"verbose" description:"Verbose output"`
 }
@@ -90,7 +86,7 @@ func main() {
 		"The benchmark command will report time taken, and compression ratio for the selected compression methods. Use -a|all to benchmark all methods, this will take a while!",
 		&bCmd)
 	parser.AddCommand("compress",
-		"Compress an invidual file",
+		"Compress an individual file",
 		`The compress command will compress an individual file, if no output is specified, 
 		then gompress will automatically infer the output based on the compression method used.
 		Compression level may be specified with the -l|level switch if it's supported.`,
